@@ -8,6 +8,7 @@ struct NO {
 };
 
 NO* primeiro = NULL;
+NO* ultimo = NULL;
 
 // headers
 void menu();
@@ -79,8 +80,9 @@ void inicializar()
 	}
 
 	primeiro = NULL;
-	cout << "Lista inicializada \n";
+	ultimo = NULL;
 
+	cout << "Lista inicializada \n";
 }
 
 void exibirQuantidadeElementos() {
@@ -141,7 +143,42 @@ void inserirElemento()
 
 void excluirElemento()
 {
+	int numero;
+	cout << "Digite o elemento que deseja excluir: ";
+	cin >> numero;
 
+	// Verificando se o numero existe ou nao
+	NO* numeroParaExcluir = posicaoElemento(numero);
+	if (numeroParaExcluir == NULL) {
+		cout << "Elemento nao encontrado" << endl;
+		return;
+	}
+
+	if (numeroParaExcluir == primeiro) {
+		// Caso A: Exclusao do primeiro elemento
+		primeiro = primeiro->prox;
+		if (primeiro == NULL) {
+			// Se a lista ficou vazia, o ultimo tambem deve ser NULL
+			ultimo = NULL;
+		}
+	}
+	else {
+		// Caso B: Exclusao do meio ou do fim
+		NO* anterior = primeiro;
+		while (anterior->prox != numeroParaExcluir) {
+			anterior = anterior->prox;
+		}
+		anterior->prox = numeroParaExcluir->prox;
+
+		// Se o elemento a ser excluido era o ultimo,
+		// o ponteiro 'ultimo' deve ser atualizado para o 'anterior'.
+		if (anterior->prox == NULL) {
+			ultimo = anterior;
+		}
+	}
+
+	free(numeroParaExcluir);
+	cout << "Elemento excluido com sucesso!" << endl;
 }
 
 void buscarElemento()
@@ -149,4 +186,15 @@ void buscarElemento()
 
 }
 
-
+NO* posicaoElemento(int numero)
+{
+	NO* aux = primeiro;
+	while (aux != NULL) {
+		if (aux->valor == numero)
+		{
+			break;
+		}
+		aux = aux->prox;
+	}
+	return aux;
+}
